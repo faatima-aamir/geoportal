@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload GeoJSON</title>
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" integrity="sha512-gc3xjCmIy673V6MyOAZhIW93xhM9ei1I+gLbmFjUHIjocENRsLX/QUE1htk5q1XV2D/iie/VQ8DXI6Vu8bexvQ==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Development version of Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+    <!-- Leaflet and plugins -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js" integrity="sha512-ozq8xQKq6urvuU6jNgkfqAmT7jKN2XumbrX1JiB3TnF7tI48DPI4Gy1GXKD/V3EExgAs1V+pRO7vwtS1LHg0Gw==" crossorigin="anonymous"></script>
+
+    <!-- Utility Libraries -->
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+<style>
+    [v-cloak] { display: none; }
+
+    body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to top right, #1c2833, #2c3e50);
+            background-image: url("{% static 'images/background.jpg' %}");
+            background-size: cover;
+            min-height: 100vh;
+            color: #ecf0f1;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .upload-box {
+            background: rgba(95, 103, 112, 0.7); /* dark semi-transparent */
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: #ecf0f1;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .input-group { margin-bottom: 1rem; }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ecf0f1;
+        }
+
+        input[type="file"],
+        input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #7f8c8d;
+            background-color: #34495e;
+            color: #ecf0f1;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            background: #34495e;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 1rem;
+        }
+
+        button:hover { background: #34495e; }
+
+        button:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border: 1px solid #95a5a6;
+        }
+
+        .message.error {
+            background: #c0392b;
+            color: #fff;
+        }
+
+        .message.success {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        #map-container {
+            width: 100%;
+            height: 500px;
+            margin: 1rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #2c3e50;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .attribute-table {
+            margin-top: 1rem;
+            background: #2c3e50;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            color: #ecf0f1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            color: #ecf0f1;
+            background-color: #2c3e50;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #34495e;
+            text-align: left;
+        }   
+
+        th {
+            background: #34495e;
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background: #34495e;
+        }
+
+        tr:hover {
+            background: #3b5770;
+        }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div id="app" v-cloak>
+            {% verbatim %}
+            <div class="upload-box">
+                <h1>GeoJSON and Shapefile Viewer</h1>
+
+                <div class="input-group">
+                    <label for="file-upload">Upload GeoJSON or Shapefile (ZIP):</label>
+                    <input 
+                        id="file-upload"
+                        type="file" 
+                        @change="handleFileUpload" 
+                        accept=".geojson,.json,.zip" 
+                    />
+                </div>
+
+                <div class="input-group" v-if="mapInitialized">
+                    <label for="buffer-distance">Buffer Distance (kilometers):</label>
+                    <input 
+                        id="buffer-distance"
+                        type="number" 
+                        v-model.number="bufferDistance" 
+                        min="0.1" 
+                        step="0.1" 
+                        placeholder="Enter buffer distance"
+                    />
+                </div>
+
+                <div class="button-group">
+                    <button @click="bufferDrawnLayer" :disabled="!mapInitialized">
+                        Buffer Polygon
+                    </button>
+                    <button @click="toggleLayer" :disabled="!geoLayer">
+                        {{ visible ? 'Hide' : 'Show' }} Layer
+                    </button>
+                    <button @click="showAttributes" :disabled="!geojsonData">
+                        View Attributes
+                    </button>
+                    <button @click="clearMap" :disabled="!mapInitialized">
+                        Clear Map
+                </div>
+
+                <div v-if="message" class="message" :class="{ 'error': message.includes('Error') }">
+                    {{ message }}
+                </div>
+            </div>
+
+            <div id="map-container">
+                <div id="map"></div>
+            </div>
+
+            <div v-if="showTable && attributeHeaders.length > 0" class="attribute-table">
+                <h2>Attribute Table</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th v-for="header in attributeHeaders" :key="header">{{ header }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(row, index) in attributeData" :key="index">
+                            <td v-for="header in attributeHeaders" :key="header">{{ row[header] || '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endverbatim %}
+        </div>
+    </div>
+    <div id="chatbot" style="...">
+    <div style="padding:10px; background:#3e4a5e; color:white;">Geo Chat</div>
+    <div id="chat-messages" style="flex:1; padding:10px; overflow-y:auto;"></div>
+    <div style="display:flex; padding:10px;">
+        <input type="text" id="chat-input" style="flex:1;" placeholder="Ask a GIS question...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    </div>
+
+    <!-- CSRF Token -->
+    <script>
+        const csrftoken = "{{ csrf_token }}";
+        async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        const chat = document.getElementById('chat-messages');
+        chat.innerHTML += `<div><strong>You:</strong> ${msg}</div>`;
+        input.value = "";
+
+        const response = await fetch("/geo-chat/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: msg })
+        });
+
+        if (!response.ok || !response.body) {
+            chat.innerHTML += `<div><strong>GeoBot:</strong> ⚠️ Server error.</div>`;
+            return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let full = "";
+        let botMsg = document.createElement("div");
+        botMsg.innerHTML = "<strong>GeoBot:</strong> ";
+        chat.appendChild(botMsg);
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const matches = [...chunk.matchAll(/data:\s?(.*)/g)];
+
+            for (const match of matches) {
+                const token = match[1];
+                full += token;
+                botMsg.innerHTML = `<strong>GeoBot:</strong> ${full}`;
+                chat.scrollTop = chat.scrollHeight;
+            }
+        }
+    }
+    </script>
+
+    <!-- Your application code -->
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ dataset.name }} - Metadata</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            background-image: url("{% static 'images/background.jpg' %}");
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #1f2e4c;
+        }
+
+        .header {
+            background-color: #002244;
+            color: white;
+            padding: 1rem 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #bfc5cc;
+            border-bottom: 2px solid #ada9a9;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        dl {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 0.5rem 1rem;
+            margin-top: 1rem;
+        }
+
+        dt {
+            font-weight: bold;
+            color: #003366;
+        }
+
+        dd {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📄 Metadata - {{ dataset.name }}</h1>
+    </div>
+
+    <div class="container">
+        <h2>Basic Info</h2>
+        <dl>
+            <dt>Title</dt>
+            <dd>{{ dataset.name|default:"Not available" }}</dd>
+
+            <dt>Owner</dt>
+            <dd>{{ dataset.owner|default:"Not available" }}</dd>
+
+            <dt>Last Updated</dt>
+            <dd>{{ dataset.updated|default:"Not available" }}</dd>
+
+            <dt>Abstract</dt>
+            <dd>{{ dataset.abstract|default:"Not available" }}</dd>
+
+            <dt>Keywords</dt>
+            <dd>{{ dataset.keywords|default:"Not available" }}</dd>
+
+            <dt>Spatial Extent</dt>
+            <dd>{{ dataset.bbox|default:"Not available" }}</dd>
+        </dl>
+
+        <h2>Standards</h2>
+        <dl>
+            <dt>Coordinate System</dt>
+            <dd>{{ dataset.crs|default:"Not available" }}</dd>
+
+            <dt>Data Format</dt>
+            <dd>{{ dataset.format|default:"Not available" }}</dd>
+
+            <dt>Metadata Standard</dt>
+            <dd>ISO 19115</dd>
+        </dl>
+    </div>
+</body>
+</html>

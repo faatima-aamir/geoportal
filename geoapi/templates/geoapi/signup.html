@@ -1,0 +1,117 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up - Mapnetic</title>
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url("{% static 'images/background.jpg' %}") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #2f2f2f; /* dark charcoal */
+  }
+
+  .form-box {
+    background: rgba(255, 255, 255, 0.94);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    width: 380px;
+    max-width: 90%;
+    text-align: center;
+  }
+
+  h2 {
+    color: #4b5e6d; /* soft slate blue */
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.6rem 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #fefefe;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus {
+    border-color: #748ea1; /* muted neutral blue-gray */
+    outline: none;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #5d7286; /* medium neutral slate */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  button:hover {
+    background-color: #475866; /* darker neutral slate */
+    transform: translateY(-2px);
+  }
+
+  a {
+    display: block;
+    margin-top: 1rem;
+    color: #5a6f81; /* muted cool blue */
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  form p {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+
+  form p + p {
+    margin-top: 1rem;
+  }
+
+  form label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+  }
+</style>
+
+</head>
+<body>
+  <div class="form-box">
+    <h2>Sign Up</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Create Account</button>
+    </form>
+    <a href="{% url 'login_view' %}">Already have an account? Login</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,393 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualise Your Data</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f5f5f5;
+        color: #2f2f2f;
+        margin: 0;
+        padding: 0;
+        background-image: url("{% static 'images/background.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: rgba(255, 255, 255, 0.95); /* light parchment */
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: #3e4a5e; /* subtle slate */
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    label {
+        display: block;
+        font-size: 1rem;
+        margin-bottom: 6px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    select,
+    input[type="file"],
+    button {
+        padding: 10px;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 300px;
+        border: 1px solid #c2c2c2;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+        background-color: #f9f9f9;
+        color: #222;
+    }
+
+    button {
+        background-color: #4a6a88; /* neutral cool blue-gray */
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #3c566e;
+    }
+
+    #chart {
+        margin-top: 30px;
+    }
+
+    #columnSelectors {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    #columnSelectors > div {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+        word-break: break-word;
+        background-color: #ffffff;
+    }
+
+    th, td {
+        border: 1px solid #dcdcdc;
+        padding: 10px;
+        text-align: center;
+        color: #333;
+    }
+
+    th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+        #columnSelectors {
+            flex-direction: column;
+        }
+
+        select, input[type="file"], button {
+            width: 100%;
+        }
+    }
+    #chatbot {
+    color: #ffffff; /* sets default text color inside the chatbox */
+}
+
+#chat-messages {
+    color: #ffffff; /* ensures messages appear white */
+}
+
+#chat-messages div {
+    color: #ffffff; /* forces text inside each message div to be white */
+}
+
+#chat-input {
+    color: #ffffff;
+    background-color: #cccccc;
+    border: 1px solid #cccccc;
+}
+
+#chat-input::placeholder {
+    color: #cccccc;
+}
+</style>
+
+
+
+
+</head>
+<body>
+<div class="container">
+    <h1>Visualise Your Data</h1>
+    <div style="text-align: right; margin-bottom: 20px;">
+    <form method="post" action="{% url 'logout_view' %}">
+        {% csrf_token %}
+        <button type="submit" style="
+            background-color: #3e4a5e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        ">Logout</button>
+    </form>
+    </div>
+
+    <!-- Upload CSV -->
+    <div class="form-section">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>Upload CSV File:</label>
+            <input type="file" name="csv_file" accept=".csv">
+            <button type="submit">Upload and Visualise</button>
+        </form>
+    </div>
+
+    <!-- Select DB Table -->
+    <div class="form-section">
+        <form method="GET">
+            <label>Select a database table:</label>
+            <select name="table" onchange="this.form.submit()">
+                <option value="">-- Choose Table --</option>
+                {% for table in table_names %}
+                    <option value="{{ table }}" {% if table == table_selected %}selected{% endif %}>{{ table }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if plot_data %}
+    <h2>Chart Options</h2>
+    <label for="chartType">Select Chart Type:</label>
+    <select id="chartType">
+        <option value="line">Line Chart</option>
+        <option value="bar">Bar Chart</option>
+        <option value="pie">Pie Chart</option>
+        <option value="scatter">Scatter Plot</option>
+    </select>
+
+    <div id="columnSelectors"></div>
+    <div id="chart"></div>
+
+    <script>
+        window.onload = function () {
+            const plotData = {{ plot_data|safe }};
+            console.log("📈 plotData in JS:", plotData);
+            if (!plotData || Object.keys(plotData).length === 0) return;
+
+            const columns = Object.keys(plotData);
+            const chartDiv = document.getElementById('chart');
+            const selectorsDiv = document.getElementById('columnSelectors');
+
+            function createDropdown(id, label, multiple = false) {
+                const container = document.createElement('div');
+                const lbl = document.createElement('label');
+                lbl.innerText = label;
+                const select = document.createElement('select');
+                select.id = id;
+                if (multiple) {
+                    select.multiple = true;
+                    select.size = 5;
+                }
+
+                columns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.text = col;
+                    select.appendChild(option);
+                });
+
+                container.appendChild(lbl);
+                container.appendChild(select);
+                return container;
+            }
+
+            function getSelectedValues(id) {
+                const el = document.getElementById(id);
+                return Array.from(el.selectedOptions).map(opt => opt.value);
+            }
+
+            function renderChart() {
+                const chartType = document.getElementById('chartType').value;
+                selectorsDiv.innerHTML = '';
+
+                if (chartType === 'pie') {
+                    selectorsDiv.appendChild(createDropdown('pieCol', 'Select Column for Pie'));
+                } else if (chartType === 'scatter') {
+                    selectorsDiv.appendChild(createDropdown('xCol', 'Select X Axis'));
+                    selectorsDiv.appendChild(createDropdown('yCol', 'Select Y Axis'));
+                } else {
+                    selectorsDiv.appendChild(createDropdown('xCol', 'Select X Axis'));
+                    selectorsDiv.appendChild(createDropdown('yCols', 'Select Y Column(s)', true));
+                }
+
+                selectorsDiv.querySelectorAll('select').forEach(select => {
+                    select.addEventListener('change', updateChart);
+                });
+
+                updateChart();
+            }
+
+            function updateChart() {
+                const chartType = document.getElementById('chartType').value;
+                chartDiv.innerHTML = '';
+
+                if (chartType === 'pie') {
+                    const col = document.getElementById('pieCol')?.value;
+                    if (!col || !plotData[col]) return;
+
+                    const values = plotData[col].y || [];
+                    const total = values.reduce((a, b) => a + b, 0);
+                    const labels = values.map((v, i) => `Row ${i + 1} (${((v / total) * 100).toFixed(1)}%)`);
+
+                    Plotly.newPlot(chartDiv, [{
+                        values: values,
+                        labels: labels,
+                        type: 'pie'
+                    }], { title: `Pie Chart of ${col}` });
+
+                } else if (chartType === 'scatter') {
+                    const x = document.getElementById('xCol')?.value;
+                    const y = document.getElementById('yCol')?.value;
+                    if (!x || !y || !plotData[x] || !plotData[y]) return;
+
+                    Plotly.newPlot(chartDiv, [{
+                        x: plotData[x].y,
+                        y: plotData[y].y,
+                        mode: 'markers',
+                        type: 'scatter',
+                        name: `${y} vs ${x}`
+                    }], {
+                        title: `Scatter Plot: ${y} vs ${x}`,
+                        xaxis: { title: x },
+                        yaxis: { title: y }
+                    });
+
+                } else {
+                    const x = document.getElementById('xCol')?.value;
+                    const yCols = getSelectedValues('yCols');
+                    if (!x || yCols.length === 0) return;
+
+                    const traces = yCols.map(col => ({
+                        x: plotData[x]?.y || plotData[col]?.y,
+                        y: plotData[col]?.y,
+                        name: col,
+                        type: chartType === 'line' ? 'scatter' : 'bar',
+                        mode: chartType === 'line' ? 'lines+markers' : undefined
+                    }));
+
+                    Plotly.newPlot(chartDiv, traces, {
+                        title: `${chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart`,
+                        xaxis: { title: x },
+                        yaxis: { title: yCols.join(", ") }
+                    });
+                }
+            }
+
+            document.getElementById('chartType').addEventListener('change', renderChart);
+            renderChart();
+        };
+
+        async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        const chat = document.getElementById('chat-messages');
+        chat.innerHTML += `<div><strong>You:</strong> ${msg}</div>`;
+        input.value = "";
+
+        const response = await fetch("/geo-chat/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: msg })
+        });
+
+        if (!response.ok || !response.body) {
+            chat.innerHTML += `<div><strong>GeoBot:</strong> ⚠️ Server error.</div>`;
+            return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let full = "";
+        let botMsg = document.createElement("div");
+        botMsg.innerHTML = "<strong>GeoBot:</strong> ";
+        chat.appendChild(botMsg);
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const matches = [...chunk.matchAll(/data:\s?(.*)/g)];
+
+            for (const match of matches) {
+                const token = match[1];
+                full += token;
+                botMsg.innerHTML = `<strong>GeoBot:</strong> ${full}`;
+                chat.scrollTop = chat.scrollHeight;
+            }
+        }
+    }
+
+    </script>
+    {% endif %}
+
+    {% if stats %}
+    <h2>Summary Statistics</h2>
+    <table>
+        <tr>
+            <th>Column</th>
+            {% for stat_name in stat_headers %}
+                <th>{{ stat_name }}</th>
+            {% endfor %}
+        </tr>
+        {% for col, stat_vals in stats.items %}
+        <tr>
+            <td><strong>{{ col }}</strong></td>
+            {% for val in stat_vals.values %}
+                <td>{{ val }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+<div id="chatbot" style="...">
+    <div style="padding:10px; background:#3e4a5e; color:white;">Geo Chat</div>
+    <div id="chat-messages" style="flex:1; padding:10px; overflow-y:auto;"></div>
+    <div style="display:flex; padding:10px;">
+        <input type="text" id="chat-input" style="flex:1;" placeholder="Ask a GIS question...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    </div>
+</body>
+</html>

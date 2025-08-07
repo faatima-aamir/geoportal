@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ dataset.name }} - View Dataset</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-image: url("{% static 'images/background.jpg' %}");
+            background-size: cover;
+            margin: 0;
+            background-color: #f4f8fc;
+            color: #1a2b4c;
+        }
+
+        .header {
+            background-color: #002244;
+            color: white;
+            padding: 0.75rem 2rem;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #ced1d4;
+        }
+
+        #map {
+            height: 400px;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #004080;
+            color: white;
+        }
+        .table-container {
+            overflow-x: auto;
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ {{ dataset.name }}</h1>
+    </div>
+    <div class="container">
+
+        <!-- ✅ Map container (was missing) -->
+        <div id="map"></div>
+
+        <h2>Attributes</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {% for column in columns %}
+                        <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        {% for value in row %}
+                        <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const map = L.map('map').setView([0, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const wmsLayer = L.tileLayer.wms("{{ wms_url }}", {
+            layers: "{{ layer_full_name }}",
+            format: 'image/png',
+            transparent: true,
+            attribution: "GeoServer"
+        }).addTo(map);
+    </script>
+</body>
