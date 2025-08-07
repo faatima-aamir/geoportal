@@ -1,7 +1,7 @@
-🛰️ Web-Based Geoportal for Spatial Data Sharing
-A full-stack spatial data sharing platform built with Django, OpenLayers, GeoServer, and PostGIS. This geoportal allows users to upload, visualize, and analyze spatial datasets through an interactive web map.
+# 🛰️ Web-Based Geoportal for Spatial Data Sharing
+# # A full-stack spatial data sharing platform built with Django, OpenLayers, GeoServer, and PostGIS. This geoportal allows users to upload, visualize, and analyze spatial datasets through an interactive web map.
 
-🔧 Technologies Used
+#🔧 Technologies Used
 Frontend: HTML5, CSS3, JavaScript, OpenLayers
 
 Backend: Django (Python)
@@ -12,7 +12,7 @@ Database: PostgreSQL + PostGIS
 
 Environment: Anaconda (Python 3.10)
 
-✨ Features
+#✨ Features
 Upload shapefiles or GeoJSON files
 
 Visualize uploaded layers using OpenLayers
@@ -27,7 +27,7 @@ Display charts or summary statistics of datasets
 
 Has LLM integration to ask any questions
 
-🧩 Project Setup
+#🧩 Project Setup
 1. Clone the Repository
 git clone https://github.com/faatima-aamir/web-gis-geoportal.git
 cd web-gis-geoportal
@@ -54,7 +54,6 @@ WMS and WFS layers must be published and accessible
 Layers are connected to the OpenLayers map via service URLs
 
 🖼️ Screenshots
-(Optional — but recommended for visual context)
 Homepage:
 <img width="1919" height="864" alt="image" src="https://github.com/user-attachments/assets/d6329c81-b71c-4d31-a32e-45a28965505e" />
 Login:
