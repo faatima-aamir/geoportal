@@ -1,8 +1,8 @@
 # 🛰️ Web-Based Geoportal for Spatial Data Sharing
-## A full-stack spatial data sharing platform built with Django, OpenLayers, GeoServer, and PostGIS. This geoportal allows users to upload, visualize, and analyze spatial datasets through an interactive web map.
+## A full-stack spatial data sharing platform built with Django, Leaflet, GeoServer, and PostGIS. This geoportal allows users to upload, visualize, and analyze spatial datasets through an interactive web map.
 
 #🔧 Technologies Used
-Frontend: HTML5, CSS3, JavaScript, OpenLayers
+Frontend: HTML5, CSS3, JavaScript, Leaflet
 
 Backend: Django (Python)
 
