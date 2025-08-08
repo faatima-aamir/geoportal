@@ -1,7 +1,7 @@
 # 🛰️ Web-Based Geoportal for Spatial Data Sharing
 ## A full-stack spatial data sharing platform built with Django, Leaflet, GeoServer, and PostGIS. This geoportal allows users to upload, visualize, and analyze spatial datasets through an interactive web map.
 
-#🔧 Technologies Used
+## 🔧 Technologies Used
 Frontend: HTML5, CSS3, JavaScript, Leaflet
 
 Backend: Django (Python)
@@ -12,7 +12,7 @@ Database: PostgreSQL + PostGIS
 
 Environment: Anaconda (Python 3.10)
 
-#✨ Features
+## ✨ Features
 Upload shapefiles or GeoJSON files
 
 Visualize uploaded layers using OpenLayers
@@ -27,33 +27,49 @@ Display charts or summary statistics of datasets
 
 Has LLM integration to ask any questions
 
-#🧩 Project Setup
+## 🧩 Project Setup
 1. Clone the Repository
+```
 git clone https://github.com/faatima-aamir/web-gis-geoportal.git
+```
+```
 cd web-gis-geoportal
+```
 
-2. Create and Activate a Virtual Environment (Anaconda)
+3. Create and Activate a Virtual Environment (Anaconda)
+```
 conda create -n geoportal_env python=3.10
+```
+```
 conda activate geoportal_env
+```
 
-3. Install Dependencies
+4. Install Dependencies
+```
 pip install -r requirements.txt
+```
 
-4. Run the Django Server
+5. Run the Django Server
+```
 python manage.py makemigrations
+```
+```
 python manage.py migrate
+```
+```
 python manage.py runserver
+```
 
 Open your browser and go to: http://127.0.0.1:8000
 
-🌍 GeoServer Configuration
+## 🌍 GeoServer Configuration
 GeoServer must be running at: http://localhost:8080/geoserver
 
 WMS and WFS layers must be published and accessible
 
 Layers are connected to the OpenLayers map via service URLs
 
-🖼️ Screenshots
+## 🖼️ Screenshots
 Homepage:
 <img width="1919" height="864" alt="image" src="https://github.com/user-attachments/assets/d6329c81-b71c-4d31-a32e-45a28965505e" />
 Login:
@@ -71,15 +87,6 @@ Visualize datasets:
 <img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/0f3f049c-9022-44e3-9669-5f7907fea0b6" />
 <img width="1919" height="865" alt="image" src="https://github.com/user-attachments/assets/d55a847c-dba7-492b-8be2-d8e2c6ccbeec" />
 <img width="1919" height="194" alt="image" src="https://github.com/user-attachments/assets/ace07a55-78a6-482c-8c34-16e26150c662" />
-
-
-📁 Directory Structure
-/geoportal-backend/
-├── templates/ → HTML + JS (Leaflet UI)
-├── static/ → CSS, JS assets
-├── geoportal/ → Django app files
-├── manage.py → Django project runner
-└── db.sqlite3 → (or PostGIS DB connection)
 
 📄 License
 MIT License — Free to use, adapt, and share.
