@@ -75,7 +75,7 @@ Visualize datasets:
 
 📁 Directory Structure
 /geoportal-backend/
-├── templates/ → HTML + JS (OpenLayers UI)
+├── templates/ → HTML + JS (Leaflet UI)
 ├── static/ → CSS, JS assets
 ├── geoportal/ → Django app files
 ├── manage.py → Django project runner
