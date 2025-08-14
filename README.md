@@ -15,7 +15,7 @@ Environment: Anaconda (Python 3.10)
 ## ✨ Features
 Upload shapefiles or GeoJSON files
 
-Visualize uploaded layers using OpenLayers
+Visualize uploaded layers using Leaflet
 
 View attribute tables and spatial metadata
 
@@ -67,7 +67,7 @@ GeoServer must be running at: http://localhost:8080/geoserver
 
 WMS and WFS layers must be published and accessible
 
-Layers are connected to the OpenLayers map via service URLs
+Layers are connected to the Leaflte map via service URLs
 
 ## 🖼️ Screenshots
 Homepage:
