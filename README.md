@@ -1,31 +1,23 @@
 # 🛰️ Web-Based Geoportal for Spatial Data Sharing
 ## A full-stack spatial data sharing platform built with Django, Leaflet, GeoServer, and PostGIS. This geoportal allows users to upload, visualize, and analyze spatial datasets through an interactive web map.
 
-## 🔧 Technologies Used
-Frontend: HTML5, CSS3, JavaScript, Leaflet
+##  Technologies Used
+| Component        | Tools/Stack                        |
+|------------------|------------------------------------|
+| Frontend         | HTML5, CSS3, JavaScript, **Leaflet** |
+| Backend          | Django (Python)                    |
+| Spatial Server   | GeoServer (WMS/WFS)                |
+| Database         | PostgreSQL + PostGIS               |
+| Environment      | Anaconda (Python 3.10)             |
+| Integration      | (Optional) Local LLM for Q&A       |
 
-Backend: Django (Python)
-
-Spatial Server: GeoServer (WMS/WFS)
-
-Database: PostgreSQL + PostGIS
-
-Environment: Anaconda (Python 3.10)
-
-## ✨ Features
-Upload shapefiles or GeoJSON files
-
-Visualize uploaded layers using Leaflet
-
-View attribute tables and spatial metadata
-
-Connect to GeoServer for WMS/WFS services
-
-Perform basic spatial queries (e.g., buffer)
-
-Display charts or summary statistics of datasets
-
-Has LLM integration to ask any questions
+##  Features
+- Upload and manage **Shapefiles** or **GeoJSON** datasets  
+- Visualize spatial data with **Leaflet** (interactive maps)  
+- Browse **attribute data** and spatial metadata  
+- Connect and serve spatial layers via **GeoServer WMS/WFS**  
+- Basic spatial analysis (e.g., buffer operations)  
+- (Optional) Ask questions via built-in **LLM-based interface**
 
 ## 🧩 Project Setup
 1. Clone the Repository
@@ -70,23 +62,30 @@ WMS and WFS layers must be published and accessible
 Layers are connected to the Leaflte map via service URLs
 
 ## 🖼️ Screenshots
-Homepage:
-<img width="1919" height="864" alt="image" src="https://github.com/user-attachments/assets/d6329c81-b71c-4d31-a32e-45a28965505e" />
-Login:
-<img width="1919" height="863" alt="image" src="https://github.com/user-attachments/assets/4d4dac1f-e67e-45d6-811c-f503bac7bb72" />
-Signup:
-<img width="1919" height="868" alt="image" src="https://github.com/user-attachments/assets/fb0a18e7-6efc-4532-b004-aabc478bc38b" />
-Shapefile and Geojson Viewer:
-<img width="1919" height="671" alt="image" src="https://github.com/user-attachments/assets/e040b1c0-e7f5-4a1f-8b0c-add4a42bae19" />
-<img width="1919" height="843" alt="image" src="https://github.com/user-attachments/assets/3247f4b9-896b-4584-861e-b19808111288" />
-Geodataset Explorer:
-<img width="1919" height="868" alt="image" src="https://github.com/user-attachments/assets/7d34aed5-3828-49db-a350-6832a602d068" />
-<img width="1919" height="861" alt="image" src="https://github.com/user-attachments/assets/d95b737b-71c0-490d-893f-bd313743baa7" />
-Visualize datasets:
-<img width="1919" height="863" alt="image" src="https://github.com/user-attachments/assets/273edb98-73ba-4f7c-b7c5-32b091c0dcf9" />
-<img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/0f3f049c-9022-44e3-9669-5f7907fea0b6" />
-<img width="1919" height="865" alt="image" src="https://github.com/user-attachments/assets/d55a847c-dba7-492b-8be2-d8e2c6ccbeec" />
-<img width="1919" height="194" alt="image" src="https://github.com/user-attachments/assets/ace07a55-78a6-482c-8c34-16e26150c662" />
+
+- **Homepage** – landing page with login/signup options  
+  <img width="1919" height="864" alt="image" src="https://github.com/user-attachments/assets/d6329c81-b71c-4d31-a32e-45a28965505e" />
+
+- **Login** – user authentication form  
+  <img width="1919" height="863" alt="image" src="https://github.com/user-attachments/assets/4d4dac1f-e67e-45d6-811c-f503bac7bb72" />
+
+- **Signup** – new user registration  
+  <img width="1919" height="868" alt="image" src="https://github.com/user-attachments/assets/fb0a18e7-6efc-4532-b004-aabc478bc38b" />
+
+- **Map View** – interactive spatial data display  
+  <img width="1919" height="671" alt="image" src="https://github.com/user-attachments/assets/e040b1c0-e7f5-4a1f-8b0c-add4a42bae19" />  
+  <img width="1919" height="843" alt="image" src="https://github.com/user-attachments/assets/3247f4b9-896b-4584-861e-b19808111288" />
+
+- **Dataset Explorer** – inspect dataset uploaded in GeoServer  
+  <img width="1919" height="868" alt="image" src="https://github.com/user-attachments/assets/7d34aed5-3828-49db-a350-6832a602d068" />  
+  <img width="1919" height="861" alt="image" src="https://github.com/user-attachments/assets/d95b737b-71c0-490d-893f-bd313743baa7" />
+
+- **Visualize Datasets** – charts, graphs, and summary statistics  
+  <img width="1919" height="863" alt="image" src="https://github.com/user-attachments/assets/273edb98-73ba-4f7c-b7c5-32b091c0dcf9" />  
+  <img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/0f3f049c-9022-44e3-9669-5f7907fea0b6" />  
+  <img width="1919" height="865" alt="image" src="https://github.com/user-attachments/assets/d55a847c-dba7-492b-8be2-d8e2c6ccbeec" />  
+  <img width="1919" height="194" alt="image" src="https://github.com/user-attachments/assets/ace07a55-78a6-482c-8c34-16e26150c662" />
+
 
 📄 License
 MIT License — Free to use, adapt, and share.
